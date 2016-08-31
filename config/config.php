@@ -10,5 +10,18 @@ if (is_file(__DIR__.'/config_server.php')) {
 	include_once __DIR__.'/config_server.php';
 }
 
+
+require_once __DIR__.'/../src/KungFoo/Helpers/ServiceLocator.php';
+
+
+
 // load global functions
 include_once(APP_DIR.'/src/globalFunctions.php');
+
+// include files that will most probably be needed anyways
+require_once __DIR__.'/../src/KungFoo/Routing/Request.php';
+require_once __DIR__.'/../src/KungFoo/Routing/Router.php';
+require_once __DIR__.'/../src/KungFoo/Controllers/BaseController.php';
+require_once __DIR__.'/../src/KungFoo/Controllers/ExposableController.php';
+
+require_once '../src/dependencies.php';

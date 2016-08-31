@@ -18,16 +18,14 @@ class IndexController extends ExposableController
 	 * @exposeAs /test/$id
 	 * @exposeAs /test
 	 * 
-	 * @inject myobject $store
+	 * @inject database $db
 	 * @inject myobject2 $anotherone
 	 */
-	public function testMethod(Request $request, $store = ' ', $anotherone = '123', $id = 1234) {
+	public function testMethod(Request $request, $db = 'default', $anotherone = null, $id = 1234) {
 		if ($request->method == 'post') {
-
 			if (!$request->checkSignature(array('id'), $_POST)) {
 				return 'Signature missmatch';
 			}
-
 			return 'Signature matched!!';
 		}
 

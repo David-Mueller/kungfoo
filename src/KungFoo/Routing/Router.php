@@ -5,6 +5,8 @@
 
 namespace KungFoo\Routing;
 
+use \KungFoo\Helpers\ServiceLocator;
+
 /**
  * Simple Router that aims to stay performant while offering easy implementation
  *
@@ -43,7 +45,7 @@ class Router
 
 	protected $parameterMapping;
 
-	public function __construct($routePrefix = '', array $config = array()) {
+	public function __construct($routePrefix = '', ServiceLocator $serviceLocator = null, array $config = array()) {
 
 		$this->routes = $this->parameterMapping = array(
 			'get'=>array(),
@@ -71,8 +73,8 @@ class Router
 			}
 		}
 
-		if (!empty($config['dic']) && $config['dic'] instanceof \KungFoo\Helpers\ServiceLocator) {
-			$this->container = $config['dic'];
+		if (!empty($serviceLocator) && $serviceLocator instanceof ServiceLocator) {
+			$this->container = $serviceLocator;
 		}
 
 	}
