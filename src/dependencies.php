@@ -1,4 +1,14 @@
 <?php
+// registered dependencies 
+// - can be accessed via the global $CONTAINER object ($CONTAINER->resolve('myobjectAlias'))
+// - will be injected automatically into marked controller classes
+// 
+// to set up autowiring, mark your method with "@inject myobjectAlias $myParameterName"
+// and use:
+// $GLOBALS['CONTAINER']->share('myobjectAlias', function($ioc) {
+// 	return new \MyObject();
+// });
+
 
 
 // register all dependencies here

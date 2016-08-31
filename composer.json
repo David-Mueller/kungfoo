@@ -1,20 +1,25 @@
 {
+    "name": "dav1dmueller/kungfoo",
+    "description": "The KungFoo micro framework",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "David Müller",
+            "email": "david@dmwe.de"
+        }
+    ],
+    "minimum-stability": "dev",
     "require": {
-        "php" : ">=5.5.0",
-        "raveren/kint": "^1.0"
+        "php" : ">=5.5.0"
     },
- 
+    "require-dev": {
+        "raveren/kint": "1.*"
+    },
     "autoload": {
         "psr-4": {
             "App\\": "src/App/",
             "KungFoo\\": "src/KungFoo/"
         }
-    },
-    
-	"scripts": {  
-		"post-install-cmd": [
-		],
-		"post-update-cmd": [
-		]
-	}    
+    }
 }
