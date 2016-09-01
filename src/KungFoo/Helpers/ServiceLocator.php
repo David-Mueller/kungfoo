@@ -22,26 +22,36 @@ class ServiceLocator
 	protected $containerShared;
 	private $containerSharedInstances;
 
+	// register an object for creation upon calling resolve
 	public function register($key, Callable $object) {
 		$this->container[$key] = $object;
 	}
 
+	// register an object in singleton mode - the object will be reused
 	public function share($key, Callable $object) {
 		$this->containerShared[$key] = $object;
 	}
 
-	public function resolve($key) {
+	// resolve an object, creating or returning an instance while passing in the given parameters to the constructor
+	public function resolve($key, ...$params) {
+
 		if (!isset($this->container[$key]) && !isset($this->containerShared[$key])) {
 			return false;
 		}
 
+		// the first param will be the service locator itself
+		array_unshift($params, $this);
+
+		// check if this is a shared object
 		if (isset($this->containerShared[$key])) {
 			if (isset($this->containerSharedInstances[$key])) {
 				return $this->containerSharedInstances[$key];
 			}
-			$this->containerSharedInstances[$key] = $this->containerShared[$key]($this);
+			$this->containerSharedInstances[$key] = call_user_func_array($this->containerShared[$key], $params);
 			return $this->containerSharedInstances[$key];
 		}
-		return $this->container[$key]($this); // we wont save the instances but create them on the fly
+
+		// spawn and return an instance passing along the params
+		return call_user_func_array($this->container[$key], $params);
 	}
 }

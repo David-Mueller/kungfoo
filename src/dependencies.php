@@ -2,7 +2,7 @@
 
 // init ServiceLocator container
 use \KungFoo\Helpers\ServiceLocator;
-$GLOBALS['CONTAINER'] = new ServiceLocator();
+$container = new ServiceLocator();
 
 // add dependencies here... they will be injected into the controller classes by name
 // 
@@ -12,29 +12,32 @@ $GLOBALS['CONTAINER'] = new ServiceLocator();
 // 
 // to set up autowiring, mark your method with "@inject myobjectAlias $myParameterName"
 // and use:
-// $GLOBALS['CONTAINER']->share('myobjectAlias', function($ioc) {
+// $container->share('myobjectAlias', function($ioc) {
 // 	return new \MyObject();
 // });
 
-$GLOBALS['CONTAINER']->share('uniqueObjectsStore', function($ioc) {
+$container->share('uniqueObjectsStore', function(ServiceLocator $ioc) {
 	return new \App\Helpers\UniqueObjectsStore();
 });
 
-$GLOBALS['CONTAINER']->register('myobject', function($ioc) {
-	$inst = new stdClass();
+$container->register('myobject', function(ServiceLocator $ioc) {
+	$inst = new stdClass($param1, $param2);
 	$inst->name = 'Wow';
 	return $inst;
 });
 
-$GLOBALS['CONTAINER']->register('myobject2', function($ioc) {
+$container->register('myobject2', function(ServiceLocator $ioc, $param = 'awesome') {
 	$inst = new stdClass();
-	$inst->name = 'this is awesome';
+	$inst->name = 'this is ' . $param;
 	return $inst;
 });
 
 
-$GLOBALS['CONTAINER']->register('database', function($ioc) {
+$container->register('database', function(ServiceLocator $ioc) {
 	$inst = new stdClass();
 	$inst->name = 'Database';
 	return $inst;
 });
+
+// expose the container
+return $container;

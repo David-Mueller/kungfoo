@@ -29,8 +29,9 @@ use \KungFoo\Helpers\ServiceLocator;
  *       * @exposeVia post
  *       *
  *       * @exposeAs /saymyname/$name
+ *       * @inject alias $myObject
  *       * /
- *       public function method($path, $name) {
+ *       public function method($path, $myObject, $name) {
  *         ...
  *       }
  *      }
@@ -42,6 +43,7 @@ class Router
 	protected $routesComposed;
 	protected $routePrefix;
 	protected $counter;
+	protected $container;
 
 	protected $parameterMapping;
 
@@ -306,16 +308,20 @@ class Router
 		// we will always inject the Request object as $request
 		$paramsIn = array();
 		foreach ($injectParameters as $index => $type) {
-			if ($type == 'kfrequest') {
-		 		$paramsIn[$index] = new Request($path);
+			if ($type == '__kfrequest__') { // inject the request object
+				$paramsIn[$index] = new Request($path, $this->container);
 				continue;
 			}
-		 	if (!empty($type)) {
-		 		$injectedInstance = $this->container->resolve($type);
-		 		$paramsIn[$index] = $injectedInstance !== false ? $injectedInstance : null;
-		 	} else {
-		 		$paramsIn[$index] = array_pop($params);
-		 	}
+			if ($type == '__kfcontainer__') { // inject the container object
+				$paramsIn[$index] = $this->container;
+				continue;
+			}
+			if (!empty($type)) {
+				$injectedInstance = $this->container->resolve($type);
+				$paramsIn[$index] = $injectedInstance !== false ? $injectedInstance : null;
+			} else {
+				$paramsIn[$index] = array_pop($params);
+			}
 		 } 
 
 		// call a closure

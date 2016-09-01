@@ -1,5 +1,6 @@
 <?php
 namespace KungFoo\Routing;
+use KungFoo\Helpers\ServiceLocator;
 
 class Request
 {
@@ -8,13 +9,15 @@ class Request
 	protected $path = '';
 	private $secretKey;
 	private $apikey;
+	private $container;
 
 	/**
 	 * constructor receives the current path, as it has been interpreted from the higher app layer
 	 * @param string $path api/something/nice
 	 */
-	public function __construct($path) {
+	public function __construct($path, ServiceLocator $container) {
 		$this->path = explode('/',$path);
+		$this->container = $container;
 
 		$this->method    = strtolower($_SERVER['REQUEST_METHOD']);
 		$this->secretKey = defined('API_SECRET_KEY') ? API_SECRET_KEY : '';
@@ -84,7 +87,7 @@ class Request
 			strlen($apikey) < 8 || strlen($apikey) > 256 ||
 			strlen($uniqueid) < 8 || strlen($uniqueid) > 256 ||
 			strlen($signature) < 8 || strlen($signature) > 4096 ||
-			strlen($signedString) > 4096
+			strlen($signedString) > 40960
 		) {
 
 			return false;
@@ -100,7 +103,6 @@ class Request
 		}
 
 		$correctSignature = $this->getSignature($signedString);
-		// ddd($signedString, $correctSignature, $signature);
 
 		return $signature === $correctSignature;
 	}
@@ -200,7 +202,7 @@ class Request
 	private function checkIfUnique($uniqueid, $apikey = '') {
 		// we want to access a "persistency layer" that will be able to store and retrieve values by key
 		// this is a weak spot - you need to prepare your implementation of 'uniqueObjectsStore'!
-		$store = $GLOBALS['CONTAINER']->resolve('uniqueObjectsStore');
+		$store = $this->container->resolve('uniqueObjectsStore');
 		if (!is_callable(array($store, 'has')) || !is_callable(array($store, 'store'))) {
 			throw new \Exception('uniqueObjectsStore not available');
 		}

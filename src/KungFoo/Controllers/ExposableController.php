@@ -79,7 +79,7 @@ abstract class ExposableController extends BaseController
 
 			// extract the parameter names and the types in the right order
 			// the syntax is
-			// @inject alias $varname somethingelsecomeshere andhere
+			//   @inject alias $varname somethingelsecomeshere andhere
 			$injectParameters = static::parseAnnotations($method, 'inject');
 			$parameterAliases = array();
 			$parameterAliasesMapping = array();
@@ -94,9 +94,12 @@ abstract class ExposableController extends BaseController
 				}
 			}
 			
+			// get all of the aliases
 			array_walk($params, function(&$el) use (&$parameterAliases, $parameterAliasesMapping) {
 				if ($el->name === 'request') {
-					$parameterAliases[]	= 'kfrequest';
+					$parameterAliases[]	= '__kfrequest__';
+				} elseif ($el->name === 'container') {
+					$parameterAliases[]	= '__kfcontainer__';
 				} else {
 					$parameterAliases[] = isset($parameterAliasesMapping[$el->name]) ? $parameterAliasesMapping[$el->name] : (string) $el->getType();
 				}

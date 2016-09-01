@@ -4,13 +4,13 @@ namespace App\Controllers;
 
 use KungFoo\Controllers\ExposableController;
 use KungFoo\Routing\Request;
+use KungFoo\Helpers\ServiceLocator;
 use App\Helpers\UniqueObjectsStore;
 
 class IndexController extends ExposableController
 {
-
 	/**
-	 * Expose this via get and post
+	 * Expose this method via get and post
 	 *
 	 * @exposeVia get
 	 * @exposeVia post
@@ -19,9 +19,12 @@ class IndexController extends ExposableController
 	 * @exposeAs /test
 	 * 
 	 * @inject database $db
-	 * @inject myobject2 $anotherone
+	 * @inject myobject $anotherone
 	 */
-	public function testMethod(Request $request, $db = 'default', $anotherone = null, $id = 1234) {
+	public function testMethod(ServiceLocator $container, Request $request, $db = 'default', $anotherone = null, $id = 1234) {
+		$test = $container->resolve('myobject2', 'nice1');
+
+		var_dump($test);
 		if ($request->method == 'post') {
 			if (!$request->checkSignature(array('id'), $_POST)) {
 				return 'Signature missmatch';
@@ -36,7 +39,7 @@ class IndexController extends ExposableController
 	 * @exposeVia all
 	 * @exposeAs /
 	 */
-	public function index(Request $request) {
-		return $this->render('index', array('message' => 'this is Kungfoo'));
+	public function index() {
+		return $this->render('index', array('message' => 'This is KungFoo'));
 	}
 }
