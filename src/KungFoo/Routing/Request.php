@@ -13,7 +13,9 @@ class Request
 
 	/**
 	 * constructor receives the current path, as it has been interpreted from the higher app layer
-	 * @param string $path api/something/nice
+	 *
+	 * @param string         $path api/something/nice
+	 * @param ServiceLocator $container
 	 */
 	public function __construct($path, ServiceLocator $container) {
 		$this->path = explode('/',$path);
@@ -138,6 +140,12 @@ class Request
 	 * - uniqueid
 	 * - method
 	 * - all of the provided $data elements
+	 *
+	 * @param string $uri
+	 * @param string $requestMethod
+	 * @param string $calledFunction
+	 * @param mixed $data
+	 * @return mixed
 	 */
 	protected function sendSignedRequest($uri, $requestMethod, $calledFunction, $data) {
 		// setup variables
@@ -198,6 +206,12 @@ class Request
 
 	/**
 	 * check if the provided uniqueid has been provided previously or if it is a new one
+	 *
+	 * @param string $uniqueid
+	 * @param string $apikey
+	 * @return bool
+	 * @throws \Exception
+	 *
 	 */
 	private function checkIfUnique($uniqueid, $apikey = '') {
 		// we want to access a "persistency layer" that will be able to store and retrieve values by key

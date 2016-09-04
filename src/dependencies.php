@@ -21,7 +21,7 @@ $container->share('uniqueObjectsStore', function(ServiceLocator $ioc) {
 });
 
 $container->register('myobject', function(ServiceLocator $ioc) {
-	$inst = new stdClass($param1, $param2);
+	$inst = new stdClass();
 	$inst->name = 'Wow';
 	return $inst;
 });
@@ -31,7 +31,6 @@ $container->register('myobject2', function(ServiceLocator $ioc, $param = 'awesom
 	$inst->name = 'this is ' . $param;
 	return $inst;
 });
-
 
 $container->register('database', function(ServiceLocator $ioc) {
 	$inst = new stdClass();

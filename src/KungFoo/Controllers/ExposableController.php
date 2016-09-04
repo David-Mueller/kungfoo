@@ -96,15 +96,21 @@ abstract class ExposableController extends BaseController
 			
 			// get all of the aliases
 			array_walk($params, function(&$el) use (&$parameterAliases, $parameterAliasesMapping) {
+
 				if ($el->name === 'request') {
 					$parameterAliases[]	= '__kfrequest__';
 				} elseif ($el->name === 'container') {
 					$parameterAliases[]	= '__kfcontainer__';
 				} else {
-					$parameterAliases[] = isset($parameterAliasesMapping[$el->name]) ? $parameterAliasesMapping[$el->name] : (string) $el->getType();
+					$type = is_callable($el, 'getType') ? (string) $el->getType() : '';
+					$parameterAliases[] = isset($parameterAliasesMapping[$el->name]) ? $parameterAliasesMapping[$el->name] : $type;
 				}
 				$el = $el->name;
 			});
+
+			// now add request and container to $parameterAliasesMapping
+			$parameterAliasesMapping['request'] = true;
+			$parameterAliasesMapping['container'] = true;
 
 			// get the path that should be used to mount the method
 			// either from the exposeAs annotation or derived from the methods name and its params
@@ -115,7 +121,7 @@ abstract class ExposableController extends BaseController
 				// add params to the routes name
 				$methodRoute = '';
 				foreach ($params as $paramname) {
-					if ($paramname != 'request') {
+					if (!array_key_exists($paramname, $parameterAliasesMapping)) {
 						$methodRoute .= '/$' . $paramname;
 					}
 				}

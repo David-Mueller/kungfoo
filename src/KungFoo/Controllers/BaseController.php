@@ -16,7 +16,11 @@ abstract class BaseController
 			extract($data);
 			ob_start();
 			{
-				require(APP_DIR.'/src/templates/' . $template . '.phtml');
+				$filepath = APP_DIR.'/src/templates/' . $template . '.phtml';
+				if (!is_file($filepath)) {
+					return false;
+				}
+				require($filepath);
 			}
 			return ob_get_clean();
 		};

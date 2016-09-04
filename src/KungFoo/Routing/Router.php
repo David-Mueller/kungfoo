@@ -5,6 +5,7 @@
 
 namespace KungFoo\Routing;
 
+use KungFoo\Controllers\ExposableController;
 use \KungFoo\Helpers\ServiceLocator;
 
 /**
@@ -114,8 +115,13 @@ class Router
 
 	/**
 	 * Add routes for all functions that are exposed via exposeMethods()
+	 *
+	 * @param string $classname
+	 * @param string $mountPoint
+	 * @return bool
 	 */
 	public function addFromController($classname, $mountPoint = '') {
+		/** @var ExposableController $classname */
 		$allowedMethods = ['all','get','post','put','delete','patch'];
 
 		// check if the arguments seem suitable
@@ -299,9 +305,11 @@ class Router
 	 * 
 	 * all fetched params will be provided alongside the currently matched path (first param)
 	 * 
-	 * @param  mixed $callable the route handler - a callable expression
-	 * @param  array $params   array of matched params
-	 * @return mixed           result of the route handler
+	 * @param  mixed $callable           the route handler - a callable expression
+	 * @param  string $path              the path to be matched
+	 * @param  array $params             all function params
+	 * @param  array $injectParameters   array of params that have been defined to be injected
+	 * @return mixed                     result of the route handler
 	 */
 	private function dispatch($callable, $path, $params = null, $injectParameters = array()) {
 
