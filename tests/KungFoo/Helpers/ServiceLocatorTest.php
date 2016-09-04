@@ -1,13 +1,17 @@
 <?php
 
 /**
- * ServiceLocatorTest.php
+ * Testing the proper functioning of the ServiceLocator class
+ *
  * User: david
  * Date: 4.9.16
  * Time: 5:15
  */
 class ServiceLocatorTest extends PHPUnit_Framework_TestCase
 {
+	/**
+	 * test, if stored items can be retrieved
+	 */
 	function testServiceLocatorStoresItem() {
 		$key = 'item1';
 
@@ -31,6 +35,9 @@ class ServiceLocatorTest extends PHPUnit_Framework_TestCase
 
 	}
 
+	/**
+	 * test if shared objects are really shared
+	 */
 	function testServiceLocatorStoresSharedItem() {
 		$key = 'item1';
 
@@ -52,7 +59,11 @@ class ServiceLocatorTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('changed', $response2->name);
 	}
 
-
+	/**
+	 * Test,
+	 * if the service locator of a factory-function contains shared objects
+	 * and if params added to :resolve() are forwarded as factory parameters
+	 */
 	function testServiceLocatorPassesParams() {
 		$key = 'item1';
 		$key2 = 'item2';

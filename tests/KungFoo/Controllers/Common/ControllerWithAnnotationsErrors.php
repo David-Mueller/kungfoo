@@ -15,6 +15,6 @@ class ControllerWithAnnotationsErrors extends \KungFoo\Controllers\ExposableCont
 	 * @exposeAs /
 	 */
 	public function exposeIndexNotallowed() {
-
+		throw new Exception('exposeIndexNotallowed has been called, which shouldn\'t happen.');
 	}
 }

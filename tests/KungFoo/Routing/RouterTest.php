@@ -1,14 +1,18 @@
 <?php
 
 /**
- * RouterTest.php
- * User: david
+ * We will test running the expected controller methods
+ * by overwriting the $_SERVER superglobal and
+ * by throwing an Exception with a well defined message from inside the controller methods.
+ *
  * Date: 4.9.16
  * Time: 14:40
  */
 class RouterTest extends PHPUnit_Framework_TestCase
 {
 	/**
+	 * Test, that ControllerWithAnnotationsDispatch:exposeIndexAll will be run via GET.
+	 *
 	 * @expectedException        \Exception
 	 * @expectedExceptionMessage #called exposeIndexAll#
 	 */
@@ -24,6 +28,9 @@ class RouterTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * Test, that ControllerWithAnnotationsDispatch:exposeFunc2 will be run via GET
+	 * with an empty $param
+	 *
 	 * @expectedException        \Exception
 	 * @expectedExceptionMessage #called exposeFunc2:#
 	 */
@@ -39,6 +46,9 @@ class RouterTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * Test, that ControllerWithAnnotationsDispatch:exposeFunc2 will be run via POST
+	 * passing $param set to "123456post"
+	 *
 	 * @expectedException        \Exception
 	 * @expectedExceptionMessage #called exposeFunc2:123456post#
 	 */
@@ -54,6 +64,9 @@ class RouterTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * Test, that ControllerWithAnnotationsDispatch:exposeFunc2 will be run via GET
+	 * passing $param set to "123456get"
+	 *
 	 * @expectedException        \Exception
 	 * @expectedExceptionMessage #called exposeFunc2:123456get#
 	 */
@@ -69,6 +82,8 @@ class RouterTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * Test, that ControllerWithAnnotationsDispatch:exposeFunc2 will be run via PUT
+	 *
 	 * @expectedException        \Exception
 	 * @expectedExceptionMessage #called exposeFunc2:123456put#
 	 */
@@ -84,6 +99,8 @@ class RouterTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * Test, that ControllerWithAnnotationsDispatch:exposeFunc2 will be run via PATCH
+	 *
 	 * @expectedException        \Exception
 	 * @expectedExceptionMessage #called exposeFunc2:123456patch#
 	 */
@@ -99,6 +116,10 @@ class RouterTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * Test, that ControllerWithAnnotationsDispatch:exposeFunc2 will be run via GET
+	 * passing the injection container, an autowired object with object->name = 'object1'
+	 * and $param set to "param1-get"
+	 *
 	 * @expectedException        \Exception
 	 * @expectedExceptionMessage #called exposeFunc3:container-object1-getparam1-get#
 	 */
@@ -126,6 +147,9 @@ class RouterTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * Test, that ControllerWithAnnotationsDispatch:exposeFunc2 will be run via DELETE
+	 * passing '123456del' as $param
+	 *
 	 * @expectedException        \Exception
 	 * @expectedExceptionMessage #called exposeFunc2:123456del#
 	 */
@@ -140,6 +164,9 @@ class RouterTest extends PHPUnit_Framework_TestCase
 		$r->run();
 	}
 
+	/**
+	 * Test, if addFromController works as expected
+	 */
 	function testAddFromController() {
 		$_SERVER['REQUEST_METHOD'] = 'GET';
 
@@ -171,6 +198,9 @@ class RouterTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue($result);
 	}
 
+	/**
+	 * Test, if addFromController ignores unsupported "@exposeVia" annotations
+	 */
 	function testAddFromControllerNotAllowed() {
 		$_SERVER['REQUEST_METHOD'] = 'GET';
 
