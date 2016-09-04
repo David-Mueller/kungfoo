@@ -265,6 +265,9 @@ class Router
 
 		// find the route of the current path
 		$path = substr($path, 1);
+		if ($path === false) {
+			$path = '';
+		}
 
 		// now remove nonmatching routes one by one
 		$matchingRoute = false;

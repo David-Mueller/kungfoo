@@ -26,6 +26,23 @@ class ExposableControllerTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('/test/', $method['route']);
 	}
 
+	public function testClassDefaultAnnotations()
+	{
+		$c = new ControllerWithAnnotations2();
+		$methods = $c::exposeMethods();
+		$methods = $this->getMethodFromExposed($methods, 'exposeIndexAll');
+
+		$this->assertEquals(1, sizeof($methods));
+
+		$method = $methods[0];
+		// the method has been exposed.
+		$this->assertNotEmpty($method);
+		$this->assertEmpty($method['parameters']);
+		$this->assertEquals(1, sizeof($method['requestMethods']));
+		$this->assertEquals('all', $method['requestMethods'][0]);
+		$this->assertEquals('/exposeIndexAll', $method['route']);
+	}
+
 	public function testClassAnnotationsMultiple()
 	{
 		$c = new ControllerWithAnnotations();
