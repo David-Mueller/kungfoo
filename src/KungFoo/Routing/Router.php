@@ -336,7 +336,7 @@ class Router
 		 }
 
 		 // unset the last few empty params
-		 for ($i=sizeof($paramsIn); $i >= 0; $i--) { 
+		 for ($i = sizeof($paramsIn) - 1; $i >= 0; $i--) { 
 		 	if ($paramsIn[$i] !== null) {
 		 		break;
 		 	}
@@ -356,7 +356,8 @@ class Router
 				// instantiate object and call public method
 				$object = substr($callable, 0, $pos);
 				$function = substr($callable, $pos+1);
-				return call_user_func_array(array($object, $function), $paramsIn);
+				$instance = new $object;
+				return call_user_func_array(array($instance, $function), $paramsIn);
 			}
 			// else, its probably a simple function
 			return call_user_func_array($callable, $paramsIn);
