@@ -1,6 +1,6 @@
 # The KungFoo micro framework #
 
-Super fast routing, dependency injection with auto-wired controller methods with support for cryptographically signed incoming and outgoing messages.
+Super fast routing, dependency injection with auto-wired controller methods.
 ... all in all below 40Kb.
 
 ### How to use this thing? ###
