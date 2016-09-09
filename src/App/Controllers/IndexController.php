@@ -15,16 +15,17 @@ class IndexController extends ExposableController
 	 * @exposeVia get
 	 * @exposeVia post
 	 *
-	 * @exposeAs /test/$id
-	 * @exposeAs /test
-	 * 
-	 * @inject database $db
-	 * @inject myobject $anotherone
+	 * @exposeAs  /test/$id
+	 * @exposeAs  /test
+	 *
+	 * @inject    database $db
+	 * @inject    myobject $anotherone
+	 *
+	 * @param Request $request
+	 * @param int     $id
+	 * @return string
 	 */
-	public function testMethod(ServiceLocator $container, Request $request, $db = 'default', $anotherone = null, $id = 1234) {
-		$test = $container->resolve('myobject2', 'nice1');
-
-		var_dump($test);
+	public function testMethod(Request $request, $id = 1234, $err) {
 		if ($request->method == 'post') {
 			if (!$request->checkSignature(array('id'), $_POST)) {
 				return 'Signature missmatch';
