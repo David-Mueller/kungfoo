@@ -1,12 +1,12 @@
 {
     "name": "dav1dmueller/kungfoo",
+    "version": "1.0.0",
     "description": "The KungFoo micro framework",
     "type": "project",
     "license": "MIT",
-    "version": "1.0.0",
     "authors": [
         {
-            "name": "David Müller",
+            "name": "David MÃ¼ller",
             "email": "david@dmwe.de"
         }
     ],
