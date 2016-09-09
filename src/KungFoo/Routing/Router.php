@@ -82,33 +82,33 @@ class Router
 
 	}
 
-	public function get($route, $callable, $parameterMapping = array()) {
-		$this->routes['get'][$this->counter++] = array('route' => $route, 'callable' => $callable, 'params' => $parameterMapping);
+	public function get($route, $callable, $parameterMapping = array(), $optionalParams = array()) {
+		$this->routes['get'][$this->counter++] = array('route' => $route, 'callable' => $callable, 'params' => $parameterMapping, 'optionalParams' => $optionalParams);
 		$this->parameterMapping['get'][$route] = $parameterMapping;
 		$this->recomposeRoutes();
 	}
-	public function post($route, $callable, $parameterMapping = array()) {
-		$this->routes['post'][$this->counter++] = array('route' => $route, 'callable' => $callable, 'params' => $parameterMapping);
+	public function post($route, $callable, $parameterMapping = array(), $optionalParams = array()) {
+		$this->routes['post'][$this->counter++] = array('route' => $route, 'callable' => $callable, 'params' => $parameterMapping, 'optionalParams' => $optionalParams);
 		$this->parameterMapping['post'][$route] = $parameterMapping;
 		$this->recomposeRoutes();
 	}
-	public function put($route, $callable, $parameterMapping = array()) {
-		$this->routes['put'][$this->counter++] = array('route' => $route, 'callable' => $callable, 'params' => $parameterMapping);
+	public function put($route, $callable, $parameterMapping = array(), $optionalParams = array()) {
+		$this->routes['put'][$this->counter++] = array('route' => $route, 'callable' => $callable, 'params' => $parameterMapping, 'optionalParams' => $optionalParams);
 		$this->parameterMapping['put'][$route] = $parameterMapping;
 		$this->recomposeRoutes();
 	}
-	public function delete($route, $callable, $parameterMapping = array()) {
-		$this->routes['delete'][$this->counter++] = array('route' => $route, 'callable' => $callable, 'params' => $parameterMapping);
+	public function delete($route, $callable, $parameterMapping = array(), $optionalParams = array()) {
+		$this->routes['delete'][$this->counter++] = array('route' => $route, 'callable' => $callable, 'params' => $parameterMapping, 'optionalParams' => $optionalParams);
 		$this->parameterMapping['delete'][$route] = $parameterMapping;
 		$this->recomposeRoutes();
 	}
-	public function patch($route, $callable, $parameterMapping = array()) {
-		$this->routes['patch'][$this->counter++] = array('route' => $route, 'callable' => $callable, 'params' => $parameterMapping);
+	public function patch($route, $callable, $parameterMapping = array(), $optionalParams = array()) {
+		$this->routes['patch'][$this->counter++] = array('route' => $route, 'callable' => $callable, 'params' => $parameterMapping, 'optionalParams' => $optionalParams);
 		$this->parameterMapping['patch'][$route] = $parameterMapping;
 		$this->recomposeRoutes();
 	}
-	public function all($route, $callable, $parameterMapping = array()) {
-		$this->routes['all'][$this->counter++] = array('route' => $route, 'callable' => $callable, 'params' => $parameterMapping);
+	public function all($route, $callable, $parameterMapping = array(), $optionalParams = array()) {
+		$this->routes['all'][$this->counter++] = array('route' => $route, 'callable' => $callable, 'params' => $parameterMapping, 'optionalParams' => $optionalParams);
 		$this->parameterMapping['all'][$route] = $parameterMapping;
 		$this->recomposeRoutes();
 	}
@@ -144,7 +144,7 @@ class Router
 				if (!in_array($requestMethod, $allowedMethods)) {
 					continue;
 				}
-				$this->$requestMethod($newroute, $classname.':'.$expose['method'], $expose['parameters']);
+				$this->$requestMethod($newroute, $classname.':'.$expose['method'], $expose['parameters'], $expose['optionalParameters']);
 			}
 		}
 
@@ -221,6 +221,7 @@ class Router
 			$route    = $route_el['route'];
 			$callable = $route_el['callable'];
 			$params   = $route_el['params'];
+			$optionalParams   = $route_el['optionalParams'];
 
 			$route = $this->routePrefix . $route;
 
@@ -243,7 +244,7 @@ class Router
 				$route
 			);
 
-			$routesArray[] = array($callable, $route, $params);
+			$routesArray[] = array($callable, $route, $params, $optionalParams);
 		}
 
 		if (!empty($this->config['apcu_cache'])) {
@@ -293,7 +294,8 @@ class Router
 				$matchingRoute[0],
 				$path,
 				$variables_out,
-				$matchingRoute[2]
+				$matchingRoute[2],
+				$matchingRoute[3]
 			);
 		}
 		return false;
@@ -314,7 +316,7 @@ class Router
 	 * @param  array $injectParameters   array of params that have been defined to be injected
 	 * @return mixed                     result of the route handler
 	 */
-	private function dispatch($callable, $path, $params = null, $injectParameters = array()) {
+	private function dispatch($callable, $path, $params = null, $injectParameters = array(), $optionalParams = array()) {
 
 		// we will always inject the Request object as $request
 		$paramsIn = array();
@@ -333,15 +335,16 @@ class Router
 			} else {
 				$paramsIn[$index] = array_pop($params);
 			}
-		 }
+		}
 
-		 // unset the last few empty params
-		 for ($i = sizeof($paramsIn) - 1; $i >= 0; $i--) { 
-		 	if ($paramsIn[$i] !== null) {
-		 		break;
-		 	}
-		 	unset($paramsIn[$i]);
-		 }
+		for ($i = sizeof($paramsIn) - 1; $i >= 0; $i--) {
+			if (!is_null($paramsIn[$i])) {
+				break;
+			}
+			if ($optionalParams[$i]) {
+				unset($paramsIn[$i]);
+			}
+		}
 
 		// call a closure
 		if (is_object($callable) && ($callable instanceof \Closure)) {

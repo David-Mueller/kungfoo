@@ -82,6 +82,7 @@ abstract class ExposableController extends BaseController
 			//   @inject alias $varname somethingelsecomeshere andhere
 			$injectParameters = static::parseAnnotations($method, 'inject');
 			$parameterAliases = array();
+			$parameterIsOptional = array();
 			$parameterAliasesMapping = array();
 			if (!empty($injectParameters)) {
 				foreach ($injectParameters as $parameter) {
@@ -94,9 +95,9 @@ abstract class ExposableController extends BaseController
 				}
 			}
 			
-			// get all of the aliases
-			array_walk($params, function(&$el) use (&$parameterAliases, $parameterAliasesMapping) {
-
+			// get all of the aliases and find the optional params
+			array_walk($params, function(&$el) use (&$parameterAliases, &$parameterIsOptional, $parameterAliasesMapping) {
+				$parameterIsOptional[] = $el->isOptional();
 				if ($el->name === 'request') {
 					$parameterAliases[]	= '__kfrequest__';
 				} elseif ($el->name === 'container') {
@@ -137,6 +138,7 @@ abstract class ExposableController extends BaseController
 					$exposed[] = array(
 						'method' => $method->name,
 						'parameters' => $parameterAliases,
+						'optionalParameters' => $parameterIsOptional,
 						'requestMethods' => $exposeForMethods, // multiple request methods are allowed
 						'route' => $routePrefix . $methodRoute // concatenate class route prefix and method route including params
 					);
