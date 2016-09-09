@@ -8,7 +8,7 @@ require_once '../config/config.php';
 require_once __DIR__.'/../src/App/Controllers/IndexController.php';
 
 // if you want to use composer libraries, include the autoloader...
-// require_once('../vendor/autoload.php');
+require_once('../vendor/autoload.php');
 
 // create the container from dependencies.php
 $container = require_once '../src/dependencies.php';
