@@ -333,7 +333,15 @@ class Router
 			} else {
 				$paramsIn[$index] = array_pop($params);
 			}
-		 } 
+		 }
+
+		 // unset the last few empty params
+		 for ($i=sizeof($paramsIn); $i >= 0; $i--) { 
+		 	if ($paramsIn[$i] !== null) {
+		 		break;
+		 	}
+		 	unset($paramsIn[$i]);
+		 }
 
 		// call a closure
 		if (is_object($callable) && ($callable instanceof \Closure)) {
@@ -348,8 +356,7 @@ class Router
 				// instantiate object and call public method
 				$object = substr($callable, 0, $pos);
 				$function = substr($callable, $pos+1);
-				$instance = new $object;
-				return call_user_func_array(array($instance,$function), $paramsIn);
+				return call_user_func_array(array($object, $function), $paramsIn);
 			}
 			// else, its probably a simple function
 			return call_user_func_array($callable, $paramsIn);

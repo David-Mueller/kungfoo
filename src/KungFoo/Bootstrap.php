@@ -13,6 +13,5 @@ class Bootstrap {
 		require_once __DIR__.'/Routing/Router.php';
 		require_once __DIR__.'/Controllers/BaseController.php';
 		require_once __DIR__.'/Controllers/ExposableController.php';
-
 	}	
 }
