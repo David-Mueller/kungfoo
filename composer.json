@@ -3,7 +3,7 @@
     "description": "The KungFoo micro framework",
     "type": "project",
     "license": "MIT",
-    "version": 1.0.0,
+    "version": "1.0.0",
     "authors": [
         {
             "name": "David Müller",
